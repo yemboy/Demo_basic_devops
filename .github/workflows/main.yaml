@@ -1,24 +1,33 @@
 name: Orquestación Docker
-on: workflow_dipatch
+on: workflow_dispatch
 jobs:
   build-push:
     runs-on: ubuntu-latest
-    permissions: { packages: write }
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@v4
       - uses: docker/login-action@v3
-        with: { registry: ghcr.io, username: ${{ github.repository_owner }}, password: ${{ secrets.GITHUB_TOKEN }} }
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - uses: docker/build-push-action@v6
-        with: { push: true, tags: ghcr.io/${{ github.repository_owner }}/demo-devops-docker:latest }
-  
-  run:
+        with:
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/demo-devops-docker:latest
+
+  container:
     needs: build-push
     runs-on: ubuntu-latest
-    permissions: { packages: read }
+    permissions:
+      packages: read
     steps:
       - uses: docker/login-action@v3
-        with: { registry: ghcr.io, username: ${{ github.repository_owner }}, password: ${{ secrets.GITHUB_TOKEN }} }
-      - run: |
-          docker pull ghcr.io/${{ github.repository_owner }}/demo-devops-docker:latest
-          echo "Ejecutando..."
-          docker run --rm ghcr.io/${{ github.repository_owner }}/demo-devops-docker:latest
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: docker pull ghcr.io/${{ github.repository_owner }}/demo-devops-docker:latest
+      - run: echo "Ejecutando..."
+      - run: docker run --rm ghcr.io/${{ github.repository_owner }}/demo-devops-docker:latest
