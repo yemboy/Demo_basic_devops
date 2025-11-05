@@ -30,4 +30,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - run: docker pull ghcr.io/${{ github.repository_owner }}/demo-devops-docker:latest
       - run: echo "Ejecutando..."
-      - run: docker run --rm ghcr.io/${{ github.repository_owner }}/demo-devops-docker:latest
+      - name: Ejecutar contenedor y mostrar mensaje
+        run: |
+          OUTPUT=$(docker run --rm ghcr.io/${{ github.repository_owner }}/demo-devops-docker:latest)
+          echo "$OUTPUT"
+          echo "::notice title=Mensaje ASCII::$OUTPUT"
